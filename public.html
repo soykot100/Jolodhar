@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="public-page">
+    <!-- Welcome Banner -->
+    <section class="welcome-banner">
+        <div class="welcome-content">
+            <div class="welcome-left">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="JOLODHAR" class="welcome-logo" onerror="this.style.display='none'">
+                <div>
+                    <h1 data-i18n="public_welcome" class="welcome-title">Welcome to JOLODHAR Public View</h1>
+                    <p data-i18n="public_subtitle" class="welcome-subtitle">Real-time monitoring of drainage systems across Bangladesh</p>
+                </div>
+            </div>
+            <div class="welcome-right">
+                <div class="quick-stats">
+                    <div class="qstat">
+                        <div class="qstat-num" id="statSensors">—</div>
+                        <div class="qstat-label" data-i18n="active_sensors">Active Sensors</div>
+                    </div>
+                    <div class="qstat">
+                        <div class="qstat-num" id="statDistricts">64</div>
+                        <div class="qstat-label" data-i18n="total_districts">Total Districts</div>
+                    </div>
+                    <div class="qstat">
+                        <div class="qstat-num" id="statAlerts">—</div>
+                        <div class="qstat-label" data-i18n="active_alerts">Active Alerts</div>
+                    </div>
+                </div>
+                <div class="data-sources-badge">
+                    <span class="ds-badge ds-nasa"><i class="fas fa-satellite"></i> NASA POWER</span>
+                    <span class="ds-badge ds-mendeley"><i class="fas fa-database"></i> Mendeley 38 BD</span>
+                    <span class="ds-badge ds-meteo"><i class="fas fa-cloud-rain"></i> Open-Meteo</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- BIG TOMORROW RAIN ALERT (Google Weather style) -->
+    <section class="rain-alert-section">
+        <div class="rain-alert-card" id="rainAlertCard">
+            <div class="rain-alert-left">
+                <div class="rain-icon" id="rainIcon">
+                    <i class="fas fa-cloud-rain"></i>
+                </div>
+                <div class="rain-info">
+                    <div class="rain-question" data-i18n="rain_tomorrow">Will it rain tomorrow?</div>
+                    <div class="rain-answer" id="rainAnswer">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span data-i18n="loading">Loading...</span>
+                    </div>
+                    <div class="rain-detail" id="rainDetail"></div>
+                </div>
+            </div>
+            <div class="rain-alert-right">
+                <div class="rain-prob-circle">
+                    <div class="rain-prob-num" id="rainProb">—</div>
+                    <div class="rain-prob-label" data-i18n="rain_probability">Rain Probability</div>
+                </div>
+            </div>
+        </div>
+        <div class="district-selector">
+            <label data-i18n="select_district">Select District</label>
+            <select id="districtSelect" class="district-select">
+                {% for d in districts %}
+                <option value="{{ d.name }}" data-lat="{{ d.lat }}" data-lon="{{ d.lon }}"
+                    {{ 'selected' if d.name == default_district else '' }}>
+                    {{ d.name }} — {{ d.bn_name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+    </section>
+
+    <!-- Main Grid: Map + Side Panel -->
+    <section class="main-grid">
+        <!-- LIVE MAP (left, large) -->
+        <div class="map-panel">
+            <div class="panel-header">
+                <h2><i class="fas fa-map-marked-alt"></i> <span data-i18n="live_map">Live Drain Map</span></h2>
+                <div class="map-legend">
+                    <span class="legend-item"><span class="dot dot-green"></span><span data-i18n="status_normal">Normal</span></span>
+                    <span class="legend-item"><span class="dot dot-yellow"></span><span data-i18n="status_warning">Warning</span></span>
+                    <span class="legend-item"><span class="dot dot-red"></span><span data-i18n="status_critical">Critical</span></span>
+                    <span class="legend-item"><span class="dot dot-gray"></span><span data-i18n="status_blocked">Blocked</span></span>
+                </div>
+            </div>
+            <div id="liveMap" class="map-container"></div>
+            <div class="map-footer">
+                <div class="live-indicator">
+                    <span class="live-pulse"></span>
+                    <span data-i18n="last_updated">Last updated</span>: <span id="mapLastUpdate">—</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Side Panel: Weather + Notifications -->
+        <div class="side-panel">
+            <!-- Current Weather Card -->
+            <div class="weather-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-cloud-sun"></i> <span data-i18n="live_weather">Live Weather</span></h3>
+                    <span class="data-source" data-i18n="nasa_power">NASA POWER API</span>
+                </div>
+                <div class="weather-main">
+                    <div class="weather-temp">
+                        <span id="weatherTemp">—</span>°C
+                    </div>
+                    <div class="weather-icon-large" id="weatherIcon">
+                        <i class="fas fa-cloud"></i>
+                    </div>
+                </div>
+                <div class="weather-text" id="weatherText">—</div>
+                <div class="weather-grid">
+                    <div class="wcell">
+                        <i class="fas fa-tint"></i>
+                        <div>
+                            <div class="wcell-val" id="weatherHumidity">—</div>
+                            <div class="wcell-lbl" data-i18n="humidity">Humidity</div>
+                        </div>
+                    </div>
+                    <div class="wcell">
+                        <i class="fas fa-cloud-rain"></i>
+                        <div>
+                            <div class="wcell-val" id="weatherPrecip">—</div>
+                            <div class="wcell-lbl" data-i18n="precipitation">Precipitation</div>
+                        </div>
+                    </div>
+                    <div class="wcell">
+                        <i class="fas fa-wind"></i>
+                        <div>
+                            <div class="wcell-val" id="weatherWind">—</div>
+                            <div class="wcell-lbl" data-i18n="wind_speed">Wind Speed</div>
+                        </div>
+                    </div>
+                    <div class="wcell">
+                        <i class="fas fa-eye"></i>
+                        <div>
+                            <div class="wcell-val" id="weatherCloud">—</div>
+                            <div class="wcell-lbl">Cloud %</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notifications Card -->
+            <div class="notif-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-bell"></i> <span data-i18n="notifications">Notifications</span></h3>
+                    <span class="notif-count" id="notifCount">0</span>
+                </div>
+                <div class="notif-list" id="notifList">
+                    <div class="notif-empty" data-i18n="loading">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ROAD STATUS SECTION (user-friendly: which roads waterlogged, which usable) -->
+    <section class="road-status-section">
+        <div class="section-header">
+            <h2><i class="fas fa-road"></i> <span>Road Conditions</span> / <span data-i18n="route_logging">রাস্তা অবস্থা</span></h2>
+            <p class="section-subtitle" data-i18n="road_status_subtitle">See which roads are waterlogged and which are safe to use right now</p>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="road-summary">
+            <div class="road-stat road-stat-green">
+                <div class="rs-icon"><i class="fas fa-check-circle"></i></div>
+                <div class="rs-info">
+                    <div class="rs-num" id="roadsClear">—</div>
+                    <div class="rs-label">Safe Roads / নিরাপদ রাস্তা</div>
+                </div>
+            </div>
+            <div class="road-stat road-stat-yellow">
+                <div class="rs-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                <div class="rs-info">
+                    <div class="rs-num" id="roadsCaution">—</div>
+                    <div class="rs-label">Caution / সতর্কতা</div>
+                </div>
+            </div>
+            <div class="road-stat road-stat-red">
+                <div class="rs-icon"><i class="fas fa-times-circle"></i></div>
+                <div class="rs-info">
+                    <div class="rs-num" id="roadsBlocked">—</div>
+                    <div class="rs-label">Waterlogged / জলাবদ্ধ</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Road List -->
+        <div class="road-list" id="roadList">
+            <div class="road-list-loading" data-i18n="loading">Loading...</div>
+        </div>
+    </section>
+
+    <!-- SUGGESTIONS SECTION -->
+    <section class="suggestions-section">
+        <div class="section-header">
+            <h2><i class="fas fa-lightbulb"></i> <span data-i18n="suggestions">Suggestions & Recommendations</span></h2>
+            <p class="section-subtitle" data-i18n="suggestions_subtitle">Stay safe with real-time suggestions</p>
+        </div>
+        <div class="suggestions-list" id="suggestionsList">
+            <div class="sugg-loading" data-i18n="loading">Loading...</div>
+        </div>
+    </section>
+
+    <!-- HOURLY FORECAST (tomorrow breakdown) -->
+    <section class="hourly-section" id="hourlySection" style="display:none;">
+        <div class="section-header">
+            <h2><i class="fas fa-clock"></i> <span data-i18n="tomorrow_forecast">Tomorrow's Hourly Forecast</span></h2>
+        </div>
+        <div class="hourly-scroll" id="hourlyScroll"></div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/public.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,69 @@
+<!-- Digital Twin Partial -->
+<div class="page-section">
+    <div class="page-header">
+        <h1><i class="fas fa-cube"></i> <span data-i18n="digital_twin_title">Drain Digital Twin</span></h1>
+        <p class="page-subtitle" data-i18n="digital_twin_desc">3D visualization of drainage network</p>
+    </div>
+
+    <!-- Risk Level Cards -->
+    <div class="stat-cards-grid">
+        <div class="stat-card stat-blue">
+            <div class="stat-icon"><i class="fas fa-water"></i></div>
+            <div class="stat-body">
+                <div class="stat-value" id="dtWaterLevel">—</div>
+                <div class="stat-label" data-i18n="water_level">Water Level</div>
+                <div class="stat-sub">cm</div>
+            </div>
+        </div>
+        <div class="stat-card stat-teal">
+            <div class="stat-icon"><i class="fas fa-wind"></i></div>
+            <div class="stat-body">
+                <div class="stat-value" id="dtFlowRate">—</div>
+                <div class="stat-label" data-i18n="flow_rate">Flow Rate</div>
+                <div class="stat-sub">m³/s</div>
+            </div>
+        </div>
+        <div class="stat-card stat-orange">
+            <div class="stat-icon"><i class="fas fa-ban"></i></div>
+            <div class="stat-body">
+                <div class="stat-value" id="dtBlockageRisk">—</div>
+                <div class="stat-label" data-i18n="blockage_risk">Blockage Risk</div>
+            </div>
+        </div>
+        <div class="stat-card stat-red">
+            <div class="stat-icon"><i class="fas fa-house-flood"></i></div>
+            <div class="stat-body">
+                <div class="stat-value" id="dtFloodRisk">—</div>
+                <div class="stat-label" data-i18n="flood_risk">Flood Risk</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Twin Visualization -->
+    <div class="panel">
+        <div class="panel-header">
+            <h3><i class="fas fa-project-diagram"></i> <span data-i18n="drain_network">Drain Network Visualization</span></h3>
+            <select id="twinSensorSelect" class="filter-select" onchange="loadTwinSensor()">
+                <option value="">Select Sensor...</option>
+            </select>
+        </div>
+        <div class="panel-body">
+            <div class="digital-twin-view" id="digitalTwinView">
+                <div class="twin-empty">
+                    <i class="fas fa-microchip"></i>
+                    <p>Select a sensor to view its digital twin</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sensor Readings Chart -->
+    <div class="panel">
+        <div class="panel-header">
+            <h3><i class="fas fa-chart-area"></i> Sensor Readings History (48h)</h3>
+        </div>
+        <div class="panel-body">
+            <canvas id="twinChart" height="100"></canvas>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,81 @@
+<!-- Data Sources Partial - Overview for judges -->
+<div class="page-section">
+    <div class="page-header">
+        <h1><i class="fas fa-database"></i> <span data-i18n="data_sources_title">Integrated Data Sources</span></h1>
+        <p class="page-subtitle" data-i18n="data_sources_subtitle">All data sources powering JOLODHAR</p>
+    </div>
+
+    <!-- Integration Overview -->
+    <div class="panel">
+        <div class="panel-header">
+            <h3><i class="fas fa-project-diagram"></i> Integration Architecture</h3>
+        </div>
+        <div class="panel-body">
+            <div class="integration-flow">
+                <div class="flow-node flow-mendeley">
+                    <i class="fas fa-database"></i>
+                    <strong>Mendeley BD Dataset</strong>
+                    <small>Historical (2012-2024)</small>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-node flow-nasa">
+                    <i class="fas fa-satellite"></i>
+                    <strong>NASA POWER API</strong>
+                    <small>Live weather</small>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-node flow-meteo">
+                    <i class="fas fa-cloud-rain"></i>
+                    <strong>Open-Meteo</strong>
+                    <small>Forecast</small>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-node flow-jolodhar">
+                    <img src="{{ url_for('static', filename='images/logo_icon.png') }}" alt="" onerror="this.style.display='none'" style="width:32px;height:auto;">
+                    <strong>JOLODHAR</strong>
+                    <small>Unified climate intelligence</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Source Cards -->
+    <div class="stat-cards-grid" id="dataSourceCards">
+        <div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading data sources...</div>
+    </div>
+
+    <!-- Mendeley 38 Districts List -->
+    <div class="panel">
+        <div class="panel-header">
+            <h3><i class="fas fa-map-marked-alt"></i> Mendeley 38 Districts Coverage</h3>
+        </div>
+        <div class="panel-body">
+            <div class="districts-coverage-grid" id="districtsCoverage">
+                <div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading districts...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Your Own Dataset -->
+    <div class="panel">
+        <div class="panel-header">
+            <h3><i class="fas fa-upload"></i> Upload Your Mendeley Dataset</h3>
+        </div>
+        <div class="panel-body">
+            <div class="upload-info">
+                <p>If you have the actual Mendeley 38 District BD Dataset CSV file, place it in:</p>
+                <code>data/mendeley_upload/</code>
+                <p>The app will automatically detect and use it instead of synthetic data.</p>
+                <h4>Supported file formats:</h4>
+                <ul>
+                    <li><strong>Single district file:</strong> <code>Dhaka_2024.csv</code> (one district-year)</li>
+                    <li><strong>Combined file:</strong> <code>mendeley_38_districts.csv</code> (all districts in one file)</li>
+                </ul>
+                <h4>Expected columns (Mendeley schema):</h4>
+                <div class="columns-list">
+                    YEAR, MO, DY, Latitude, Longitude, Region, ALLSKY_SFC_SW_DWN, CLRSKY_SFC_SW_DWN, ALLSKY_SFC_SW_DNI, ALLSKY_SFC_SW_DIFF, T2M, T2MDEW, TS, T2M_MAX, T2M_MIN, QV2M, RH2M, PS, WS2M, WS2M_MAX, WS2M_MIN, GWETTOP, GWETROOT, GWETPROF
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

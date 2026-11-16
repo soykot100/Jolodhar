@@ -1,0 +1,62 @@
+<!-- Sensors Partial -->
+<div class="page-section">
+    <div class="page-header">
+        <h1><i class="fas fa-microchip"></i> <span data-i18n="sensors_title">Sensor Management</span></h1>
+        <p class="page-subtitle" data-i18n="sensors_subtitle">IoT sensor configuration and monitoring</p>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header">
+            <h3><i class="fas fa-list"></i> All Sensors ({{ sensors|length }})</h3>
+            <div class="filter-bar">
+                <input type="text" id="sensorSearch" placeholder="Search sensor..." class="search-input" onkeyup="filterSensors()">
+                <select id="sensorDistrictFilter" class="filter-select" onchange="filterSensors()">
+                    <option value="">All Districts</option>
+                </select>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="table-wrapper">
+                <table class="data-table" id="sensorsTable">
+                    <thead>
+                        <tr>
+                            <th data-i18n="sensor_id">Sensor ID</th>
+                            <th data-i18n="location">Location</th>
+                            <th data-i18n="sensor_type">Type</th>
+                            <th data-i18n="sensor_status">Status</th>
+                            <th data-i18n="water_level">Water Level</th>
+                            <th data-i18n="sensor_battery">Battery</th>
+                            <th data-i18n="sensor_signal">Signal</th>
+                            <th data-i18n="last_updated">Last Updated</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in sensors %}
+                        <tr class="sensor-row" data-district="{{ s.district }}" data-id="{{ s.sensor_id }}">
+                            <td><strong>{{ s.sensor_id }}</strong></td>
+                            <td>{{ s.location_name }} <div class="sub-text">{{ s.district }}</div></td>
+                            <td><span class="badge badge-blue">{{ s.sensor_type }}</span></td>
+                            <td>
+                                {% if s.status == 'online' %}
+                                <span class="badge badge-green"><i class="fas fa-circle"></i> <span data-i18n="online">Online</span></span>
+                                {% else %}
+                                <span class="badge badge-red"><i class="fas fa-circle"></i> <span data-i18n="offline">Offline</span></span>
+                                {% endif %}
+                            </td>
+                            <td>{{ s.last_reading }} cm</td>
+                            <td>
+                                <div class="battery-bar">
+                                    <div class="battery-fill bat-{{ 'high' if s.battery > 60 else 'medium' if s.battery > 30 else 'low' }}" style="width: {{ s.battery }}%"></div>
+                                    <span class="battery-val">{{ s.battery }}%</span>
+                                </div>
+                            </td>
+                            <td>{{ s.signal }}%</td>
+                            <td class="sub-text">{{ s.last_updated[:19] if s.last_updated else '—' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

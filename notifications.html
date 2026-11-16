@@ -1,0 +1,45 @@
+<!-- Notifications Partial -->
+<div class="page-section">
+    <div class="page-header">
+        <h1><i class="fas fa-bell"></i> <span data-i18n="notifications">Notifications</span></h1>
+        <p class="page-subtitle">All system alerts and notifications</p>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header">
+            <h3><i class="fas fa-list"></i> Recent Notifications ({{ notifications|length }})</h3>
+        </div>
+        <div class="panel-body">
+            <div class="notif-admin-list">
+                {% for n in notifications %}
+                <div class="notif-admin-item severity-{{ n.severity }} {% if n.is_resolved %}resolved{% endif %}">
+                    <div class="notif-icon">
+                        {% if n.type == 'blockage' %}<i class="fas fa-ban"></i>
+                        {% elif n.type == 'flood' %}<i class="fas fa-house-flood"></i>
+                        {% elif n.type == 'rain' %}<i class="fas fa-cloud-rain"></i>
+                        {% elif n.type == 'sensor_offline' %}<i class="fas fa-wifi-slash"></i>
+                        {% elif n.type == 'maintenance' %}<i class="fas fa-tools"></i>
+                        {% elif n.type == 'resolved' %}<i class="fas fa-check-circle"></i>
+                        {% else %}<i class="fas fa-bell"></i>{% endif %}
+                    </div>
+                    <div class="notif-content">
+                        <div class="notif-title-row">
+                            <strong>{{ n.title }}</strong>
+                            {% if n.severity == 'critical' %}<span class="badge badge-red">CRITICAL</span>
+                            {% elif n.severity == 'warning' %}<span class="badge badge-orange">WARNING</span>
+                            {% else %}<span class="badge badge-blue">INFO</span>{% endif %}
+                            {% if n.is_resolved %}<span class="badge badge-green">RESOLVED</span>{% endif %}
+                        </div>
+                        <div class="notif-msg">{{ n.message }}</div>
+                        <div class="notif-meta">
+                            <i class="fas fa-map-marker-alt"></i> {{ n.district }}
+                            {% if n.sensor_id %} • <i class="fas fa-microchip"></i> {{ n.sensor_id }}{% endif %}
+                            • <i class="fas fa-clock"></i> {{ n.timestamp[:19] if n.timestamp else '' }}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>

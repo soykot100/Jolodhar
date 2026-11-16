@@ -1,0 +1,163 @@
+{
+  "model_type": "RandomForestClassifier",
+  "library": "scikit-learn",
+  "version": "1.4.0",
+  "n_estimators": 200,
+  "max_depth": 15,
+  "features_count": 11,
+  "feature_columns": [
+    "rainfall",
+    "temperature",
+    "humidity",
+    "wind_speed",
+    "water_level",
+    "flow_rate",
+    "drain_depth",
+    "drain_width",
+    "population_density",
+    "last_maintenance_days",
+    "debris_indicator"
+  ],
+  "class_names": [
+    "Normal",
+    "Warning",
+    "Critical"
+  ],
+  "class_names_bn": [
+    "স্বাভাবিক",
+    "সতর্কতা",
+    "সংকটাপন্ন"
+  ],
+  "training_samples": 2400,
+  "test_samples": 600,
+  "total_samples": 3000,
+  "training_date": "2026-11-13T22:39:27.676548",
+  "random_state": 42,
+  "accuracy": 0.8883333333333333,
+  "precision_macro": 0.8815064407354992,
+  "precision_weighted": 0.8882721756732135,
+  "recall_macro": 0.8558275058275058,
+  "recall_weighted": 0.8883333333333333,
+  "f1_score_macro": 0.8678801022310269,
+  "f1_score_weighted": 0.8881353941636388,
+  "f2_score_macro": 0.8604749610971228,
+  "f2_score_weighted": 0.8882170289843266,
+  "r2_score": 0.708391364902507,
+  "rmse": 0.334165627596057,
+  "auc_roc": 0.9688165871187184,
+  "cv_accuracy_mean": 0.8970833333333333,
+  "cv_accuracy_std": 0.007861650943380502,
+  "cv_scores": [
+    0.8958333333333334,
+    0.9,
+    0.8875,
+    0.9104166666666667,
+    0.8916666666666667
+  ],
+  "confusion_matrix": [
+    [
+      326,
+      26,
+      0
+    ],
+    [
+      29,
+      175,
+      4
+    ],
+    [
+      0,
+      8,
+      32
+    ]
+  ],
+  "classification_report": {
+    "Normal": {
+      "precision": 0.9183098591549296,
+      "recall": 0.9261363636363636,
+      "f1-score": 0.9222065063649222,
+      "support": 352.0
+    },
+    "Warning": {
+      "precision": 0.8373205741626795,
+      "recall": 0.8413461538461539,
+      "f1-score": 0.8393285371702638,
+      "support": 208.0
+    },
+    "Critical": {
+      "precision": 0.8888888888888888,
+      "recall": 0.8,
+      "f1-score": 0.8421052631578947,
+      "support": 40.0
+    },
+    "accuracy": 0.8883333333333333,
+    "macro avg": {
+      "precision": 0.8815064407354992,
+      "recall": 0.8558275058275058,
+      "f1-score": 0.8678801022310269,
+      "support": 600.0
+    },
+    "weighted avg": {
+      "precision": 0.8882721756732135,
+      "recall": 0.8883333333333333,
+      "f1-score": 0.8881353941636388,
+      "support": 600.0
+    }
+  },
+  "feature_importance": [
+    {
+      "feature": "rainfall",
+      "importance": 0.3112474266500039
+    },
+    {
+      "feature": "drain_depth",
+      "importance": 0.22760395539941297
+    },
+    {
+      "feature": "water_level",
+      "importance": 0.13958575636787868
+    },
+    {
+      "feature": "humidity",
+      "importance": 0.09825067668305673
+    },
+    {
+      "feature": "debris_indicator",
+      "importance": 0.06810164918173471
+    },
+    {
+      "feature": "last_maintenance_days",
+      "importance": 0.03370160407491296
+    },
+    {
+      "feature": "temperature",
+      "importance": 0.03291973932105985
+    },
+    {
+      "feature": "flow_rate",
+      "importance": 0.03177089094335498
+    },
+    {
+      "feature": "drain_width",
+      "importance": 0.02026462375504783
+    },
+    {
+      "feature": "population_density",
+      "importance": 0.01887747194360036
+    },
+    {
+      "feature": "wind_speed",
+      "importance": 0.017676205679937083
+    }
+  ],
+  "parameters": {
+    "n_estimators": 200,
+    "max_depth": 15,
+    "min_samples_split": 5,
+    "min_samples_leaf": 2,
+    "max_features": "sqrt",
+    "class_weight": "balanced"
+  },
+  "description": "RandomForest classifier predicting drain status (Normal/Warning/Critical) from 11 environmental and IoT features. Trained on 3000 synthetic samples based on Bangladesh monsoon patterns. Achieves high accuracy with balanced class weights to handle imbalanced real-world distribution.",
+  "description_bn": "র্যান্ডমফরেস্ট ক্লাসিফায়ার ১১টি পরিবেশগত ও আইওটি ফিচার থেকে ড্রেইন অবস্থা (স্বাভাবিক/সতর্কতা/সংকটাপন্ন) পূর্বাভাস দেয়। বাংলাদেশের বর্ষার ধরন অনুযায়ী ৩০০০ সিন্থেটিক স্যাম্পলে ট্রেইনড।"
+}

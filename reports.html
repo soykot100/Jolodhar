@@ -1,0 +1,91 @@
+<!-- Reports Partial -->
+<div class="page-section">
+    <div class="page-header">
+        <h1><i class="fas fa-file-chart"></i> <span data-i18n="reports_title">Reports & Analytics</span></h1>
+        <p class="page-subtitle" data-i18n="reports_subtitle">Generate and download system reports</p>
+    </div>
+
+    <!-- Report Type Cards -->
+    <div class="report-types-grid">
+        <div class="report-card" onclick="generateReport('daily')">
+            <i class="fas fa-calendar-day"></i>
+            <h3 data-i18n="daily_report">Daily Report</h3>
+            <p>Today's incidents and sensor activity</p>
+        </div>
+        <div class="report-card" onclick="generateReport('weekly')">
+            <i class="fas fa-calendar-week"></i>
+            <h3 data-i18n="weekly_report">Weekly Report</h3>
+            <p>Last 7 days summary</p>
+        </div>
+        <div class="report-card" onclick="generateReport('monthly')">
+            <i class="fas fa-calendar-alt"></i>
+            <h3 data-i18n="monthly_report">Monthly Report</h3>
+            <p>Last 30 days analytics</p>
+        </div>
+        <div class="report-card" onclick="generateReport('custom')">
+            <i class="fas fa-sliders-h"></i>
+            <h3 data-i18n="custom_report">Custom Report</h3>
+            <p>Choose date range</p>
+        </div>
+    </div>
+
+    <!-- Custom Date Range -->
+    <div class="panel" id="customRangePanel" style="display:none;">
+        <div class="panel-header">
+            <h3><i class="fas fa-calendar"></i> <span data-i18n="select_date_range">Select Date Range</span></h3>
+        </div>
+        <div class="panel-body">
+            <div class="date-range-form">
+                <div class="form-group-inline">
+                    <label data-i18n="from_date">From Date</label>
+                    <input type="date" id="reportFromDate">
+                </div>
+                <div class="form-group-inline">
+                    <label data-i18n="to_date">To Date</label>
+                    <input type="date" id="reportToDate">
+                </div>
+                <button class="btn-primary" onclick="generateCustomReport()">
+                    <i class="fas fa-cog"></i> <span data-i18n="generate_report">Generate Report</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Output -->
+    <div class="panel" id="reportOutputPanel" style="display:none;">
+        <div class="panel-header">
+            <h3><i class="fas fa-file-alt"></i> Report Preview</h3>
+            <div class="report-actions">
+                <button class="btn-secondary" onclick="downloadCSV()"><i class="fas fa-file-csv"></i> <span data-i18n="download_csv">Download CSV</span></button>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div id="reportOutput" class="report-output"></div>
+        </div>
+    </div>
+
+    <!-- Summary Stats -->
+    <div class="stat-cards-grid">
+        <div class="stat-card stat-blue">
+            <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
+            <div class="stat-body">
+                <div class="stat-value" id="reportIncidents">—</div>
+                <div class="stat-label" data-i18n="incidents_reported">Incidents Reported</div>
+            </div>
+        </div>
+        <div class="stat-card stat-green">
+            <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+            <div class="stat-body">
+                <div class="stat-value" id="reportResolved">—</div>
+                <div class="stat-label" data-i18n="incidents_resolved">Incidents Resolved</div>
+            </div>
+        </div>
+        <div class="stat-card stat-orange">
+            <div class="stat-icon"><i class="fas fa-stopwatch"></i></div>
+            <div class="stat-body">
+                <div class="stat-value">42<span class="stat-unit-sm">m</span></div>
+                <div class="stat-label" data-i18n="avg_response_time">Avg Response Time</div>
+            </div>
+        </div>
+    </div>
+</div>

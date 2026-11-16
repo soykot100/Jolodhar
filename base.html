@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="{{ current_lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ app_name }} - {{ app_tagline }}</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="{{ body_class|default('') }}">
+    <!-- Top Navigation -->
+    <header class="top-nav">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="JOLODHAR" class="nav-logo" onerror="this.style.display='none'">
+                <div class="brand-text">
+                    <span class="brand-name" data-i18n="app_name">{{ app_name }}</span>
+                    <span class="brand-tagline" data-i18n="app_tagline">{{ app_tagline }}</span>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="{{ url_for('public_view') }}" class="nav-link {{ 'active' if request.endpoint == 'public_view' else '' }}">
+                    <i class="fas fa-globe"></i>
+                    <span data-i18n="nav_public">Public View</span>
+                </a>
+                {% if is_admin %}
+                <a href="{{ url_for('control_dashboard') }}" class="nav-link {{ 'active' if 'control' in request.endpoint else '' }}">
+                    <i class="fas fa-cog"></i>
+                    <span data-i18n="nav_control">Control Panel</span>
+                </a>
+                <a href="{{ url_for('logout') }}" class="nav-link nav-logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span data-i18n="nav_logout">Logout</span>
+                </a>
+                {% else %}
+                <a href="{{ url_for('login') }}" class="nav-link">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span data-i18n="nav_login">Login</span>
+                </a>
+                {% endif %}
+            </nav>
+
+            <div class="nav-actions">
+                <!-- Language toggle -->
+                <button id="langToggle" class="lang-toggle" onclick="toggleLanguage()" title="Switch language">
+                    <i class="fas fa-language"></i>
+                    <span id="langLabel">{{ 'English' if current_lang == 'bn' else 'বাংলা' }}</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main content -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-left">
+                <span data-i18n="footer_text">JOLODHAR © 2025 — Team Aphelion</span>
+            </div>
+            <div class="footer-right">
+                <span data-i18n="powered_by">Powered by NASA POWER API</span>
+                <span class="footer-divider">•</span>
+                <span data-i18n="made_for">Built for NASA Space Apps Challenge</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Translations for JS -->
+    <script>
+        window.JOLODHAR = {
+            lang: "{{ current_lang }}",
+            translations: {{ translations|tojson|safe if translations else '{}'|safe }},
+            districts: {{ districts|tojson|safe if districts else '[]'|safe }},
+            defaultDistrict: "{{ default_district }}",
+            defaultLat: {{ default_lat }},
+            defaultLon: {{ default_lon }},
+            isAdmin: {{ 'true' if is_admin else 'false' }},
+            endpoints: {
+                weatherCurrent: "{{ url_for('api_weather_current') }}",
+                weatherTomorrow: "{{ url_for('api_weather_tomorrow') }}",
+                districts: "{{ url_for('api_districts') }}",
+                sensors: "{{ url_for('api_sensors') }}",
+                notifications: "{{ url_for('api_notifications') }}",
+                routes: "{{ url_for('api_routes') }}",
+                workers: "{{ url_for('api_workers') }}",
+                dashboardStats: "{{ url_for('api_dashboard_stats') }}",
+                incidents: "{{ url_for('api_incidents') }}",
+                mlMetrics: "{{ url_for('api_ml_metrics') }}",
+                mlPredict: "{{ url_for('api_ml_predict') }}",
+                mlFeatureImportance: "{{ url_for('api_ml_feature_importance') }}",
+                roads: "{{ url_for('api_roads') }}",
+                suggestions: "{{ url_for('api_suggestions') }}",
+                mendeleyInfo: "{{ url_for('api_mendeley_info') }}",
+                mendeleyDistricts: "{{ url_for('api_mendeley_districts') }}",
+                mendeleyAllDrought: "{{ url_for('api_mendeley_all_drought') }}",
+                dataSources: "{{ url_for('api_data_sources') }}",
+                climateUnified: function(name) { return "{{ url_for('api_climate_unified', district='__NAME__') }}".replace('__NAME__', encodeURIComponent(name)); },
+                weatherByDistrict: function(name) { return "{{ url_for('api_weather_by_district', name='__NAME__') }}".replace('__NAME__', encodeURIComponent(name)); },
+                setLang: function(lang) { return "{{ url_for('api_set_lang', lang='__LANG__') }}".replace('__LANG__', lang); }
+            }
+        };
+    </script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.4/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="{{ url_for('static', filename='js/i18n.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

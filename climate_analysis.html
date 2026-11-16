@@ -1,0 +1,197 @@
+<!-- Climate Analysis Partial: Mendeley Historical + NASA POWER Live -->
+<div class="page-section">
+    <div class="page-header">
+        <h1><i class="fas fa-cloud-sun-rain"></i> <span data-i18n="climate_analysis_title">Climate Analysis</span></h1>
+        <p class="page-subtitle" data-i18n="climate_analysis_subtitle">Mendeley Historical Dataset + NASA POWER Live Data</p>
+    </div>
+
+    <!-- Data Source Badge -->
+    <div class="data-source-banner">
+        <div class="dsb-item dsb-mendeley">
+            <i class="fas fa-database"></i>
+            <div>
+                <strong>Mendeley BD Dataset</strong>
+                <span>38 Districts • 2012-2024 • Historical</span>
+            </div>
+        </div>
+        <div class="dsb-plus"><i class="fas fa-plus"></i></div>
+        <div class="dsb-item dsb-nasa">
+            <i class="fas fa-satellite"></i>
+            <div>
+                <strong>NASA POWER API</strong>
+                <span>Live Weather • Real-time</span>
+            </div>
+        </div>
+        <div class="dsb-plus"><i class="fas fa-plus"></i></div>
+        <div class="dsb-item dsb-openmeteo">
+            <i class="fas fa-cloud-rain"></i>
+            <div>
+                <strong>Open-Meteo</strong>
+                <span>Forecast • Tomorrow</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dataset Info Card -->
+    <div class="panel">
+        <div class="panel-header">
+            <h3><i class="fas fa-info-circle"></i> <span data-i18n="dataset_info">Mendeley Dataset Information</span></h3>
+        </div>
+        <div class="panel-body">
+            <div class="dataset-info-grid">
+                <div class="di-cell">
+                    <span class="di-label">Dataset:</span>
+                    <strong>{{ dataset_info.name }}</strong>
+                </div>
+                <div class="di-cell">
+                    <span class="di-label" data-i18n="period">Period:</span>
+                    <strong>{{ dataset_info.period }}</strong>
+                </div>
+                <div class="di-cell">
+                    <span class="di-label" data-i18n="districts_count">Districts:</span>
+                    <strong>{{ dataset_info.districts_count }}</strong>
+                </div>
+                <div class="di-cell">
+                    <span class="di-label" data-i18n="parameters">Parameters:</span>
+                    <strong>{{ dataset_info.parameters_count }}</strong>
+                </div>
+                <div class="di-cell">
+                    <span class="di-label">Frequency:</span>
+                    <strong>Daily</strong>
+                </div>
+                <div class="di-cell">
+                    <span class="di-label">License:</span>
+                    <strong>{{ dataset_info.license }}</strong>
+                </div>
+            </div>
+            <div class="dataset-desc">{{ dataset_info.description }}</div>
+            <div class="dataset-url">
+                <i class="fas fa-external-link-alt"></i>
+                <a href="{{ dataset_info.source }}" target="_blank">{{ dataset_info.source }}</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- District Selector -->
+    <div class="panel">
+        <div class="panel-header">
+            <h3><i class="fas fa-search"></i> <span data-i18n="select_district_analysis">Select District for Analysis</span></h3>
+        </div>
+        <div class="panel-body">
+            <div class="climate-selector-row">
+                <select id="climateDistrictSelect" class="filter-select" onchange="loadClimateAnalysis()">
+                    {% for d in mendeley_districts %}
+                    <option value="{{ d.name }}" {{ 'selected' if d.name == 'Dhaka' else '' }}>
+                        {{ d.name }} — {{ d.bn_name }} ({{ d.region }})
+                    </option>
+                    {% endfor %}
+                </select>
+                <select id="climateYearSelect" class="filter-select" onchange="loadClimateAnalysis()">
+                    {% set current_year = 2025 %}
+                    {% for y in range(2024, 2011, -1) %}
+                    <option value="{{ y }}" {{ 'selected' if y == current_year else '' }}>{{ y }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Drought Analysis Cards -->
+    <div class="stat-cards-grid" id="droughtCards">
+        <div class="stat-card stat-orange">
+            <div class="stat-icon"><i class="fas fa-fire"></i></div>
+            <div class="stat-body">
+                <div class="stat-value" id="droughtIndex">—</div>
+                <div class="stat-label" data-i18n="drought_index">Drought Index</div>
+                <div class="stat-sub" id="droughtCategory">Loading...</div>
+            </div>
+        </div>
+        <div class="stat-card stat-red">
+            <div class="stat-icon"><i class="fas fa-temperature-high"></i></div>
+            <div class="stat-body">
+                <div class="stat-value" id="avgTemp">—</div>
+                <div class="stat-label" data-i18n="avg_temperature">Avg Temperature (°C)</div>
+                <div class="stat-sub">Mendeley {{ '{{year}}' }}</div>
+            </div>
+        </div>
+        <div class="stat-card stat-blue">
+            <div class="stat-icon"><i class="fas fa-tint"></i></div>
+            <div class="stat-body">
+                <div class="stat-value" id="avgHumidity">—</div>
+                <div class="stat-label" data-i18n="avg_humidity">Avg Humidity (%)</div>
+                <div class="stat-sub">Mendeley data</div>
+            </div>
+        </div>
+        <div class="stat-card stat-teal">
+            <div class="stat-icon"><i class="fas fa-seedling"></i></div>
+            <div class="stat-body">
+                <div class="stat-value" id="avgSoil">—</div>
+                <div class="stat-label" data-i18n="avg_soil_moisture">Avg Soil Moisture</div>
+                <div class="stat-sub">Surface wetness</div>
+            </div>
+        </div>
+        <div class="stat-card stat-purple">
+            <div class="stat-icon"><i class="fas fa-satellite"></i></div>
+            <div class="stat-body">
+                <div class="stat-value" id="nasaTemp">—</div>
+                <div class="stat-label" data-i18n="nasa_current_temp">NASA POWER Current Temp</div>
+                <div class="stat-sub">Live data</div>
+            </div>
+        </div>
+        <div class="stat-card stat-green">
+            <div class="stat-icon"><i class="fas fa-cloud-rain"></i></div>
+            <div class="stat-body">
+                <div class="stat-value" id="tomorrowRain">—</div>
+                <div class="stat-label" data-i18n="tomorrow_rain_prob">Tomorrow Rain %</div>
+                <div class="stat-sub">Forecast</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Monthly Climate Chart (Mendeley) -->
+    <div class="panel">
+        <div class="panel-header">
+            <h3><i class="fas fa-chart-line"></i> <span data-i18n="monthly_climate_chart">Monthly Climate (Mendeley Historical)</span></h3>
+            <span class="data-source">Mendeley BD Dataset</span>
+        </div>
+        <div class="panel-body">
+            <canvas id="monthlyClimateChart" height="100"></canvas>
+        </div>
+    </div>
+
+    <!-- Multi-Year Drought Trend -->
+    <div class="panel">
+        <div class="panel-header">
+            <h3><i class="fas fa-chart-area"></i> <span data-i18n="drought_trend">Drought Index Trend (2012-2024)</span></h3>
+            <span class="data-source">Mendeley BD Dataset</span>
+        </div>
+        <div class="panel-body">
+            <canvas id="droughtTrendChart" height="80"></canvas>
+        </div>
+    </div>
+
+    <!-- NASA POWER Live vs Mendeley Historical Comparison -->
+    <div class="panel">
+        <div class="panel-header">
+            <h3><i class="fas fa-balance-scale"></i> <span data-i18n="live_vs_historical">Live (NASA POWER) vs Historical (Mendeley)</span></h3>
+        </div>
+        <div class="panel-body">
+            <div id="comparisonTable" class="comparison-table-wrapper">
+                <div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading comparison...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- All 38 Districts Drought Map -->
+    <div class="panel">
+        <div class="panel-header">
+            <h3><i class="fas fa-map"></i> <span data-i18n="all_38_drought">All 38 Districts Drought Status</span></h3>
+            <button class="btn-refresh" onclick="loadAllDrought()"><i class="fas fa-sync"></i> Refresh</button>
+        </div>
+        <div class="panel-body">
+            <div id="allDroughtGrid" class="all-drought-grid">
+                <div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading all districts...</div>
+            </div>
+        </div>
+    </div>
+</div>

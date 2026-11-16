@@ -1,0 +1,31 @@
+<!-- Workers Partial -->
+<div class="page-section">
+    <div class="page-header">
+        <h1><i class="fas fa-user-cog"></i> <span data-i18n="workers_title">Worker Management</span></h1>
+        <p class="page-subtitle" data-i18n="workers_subtitle">Manage field workers and assignments</p>
+    </div>
+
+    <div class="workers-grid">
+        {% for w in workers %}
+        <div class="worker-card">
+            <div class="worker-header">
+                <div class="worker-avatar">{{ w.name[0] }}</div>
+                <div class="worker-info">
+                    <div class="worker-name">{{ w.name }}</div>
+                    <div class="worker-id">{{ w.worker_id }}</div>
+                </div>
+                <div class="worker-status-pill status-{{ w.status }}">
+                    <span data-i18n="{{ w.status }}">{{ w.status }}</span>
+                </div>
+            </div>
+            <div class="worker-details">
+                <div class="wd-row"><i class="fas fa-phone"></i> <span>{{ w.phone }}</span></div>
+                <div class="wd-row"><i class="fas fa-map-marker-alt"></i> <span>{{ w.zone }}</span></div>
+                <div class="wd-row"><i class="fas fa-clock"></i> <span>{{ w.shift }} shift</span></div>
+                <div class="wd-row"><i class="fas fa-star"></i> <span>{{ w.rating }} / 5.0</span></div>
+                <div class="wd-row"><i class="fas fa-tasks"></i> <span>{{ w.assigned_tasks }} active task(s)</span></div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>

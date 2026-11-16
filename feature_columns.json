@@ -1,0 +1,13 @@
+[
+  "rainfall",
+  "temperature",
+  "humidity",
+  "wind_speed",
+  "water_level",
+  "flow_rate",
+  "drain_depth",
+  "drain_width",
+  "population_density",
+  "last_maintenance_days",
+  "debris_indicator"
+]

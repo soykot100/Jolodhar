@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="error-page">
+    <div class="error-code">{{ code }}</div>
+    <div class="error-message">{{ message }}</div>
+    <a href="{{ url_for('public_view') }}" class="btn-primary">
+        <i class="fas fa-home"></i> <span>Back to Home</span>
+    </a>
+</div>
+{% endblock %}

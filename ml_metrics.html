@@ -1,0 +1,183 @@
+<!-- ML Metrics Partial -->
+<div class="page-section">
+    <div class="page-header">
+        <h1><i class="fas fa-brain"></i> <span data-i18n="ml_metrics_title">ML Model Training Metrics</span></h1>
+        <p class="page-subtitle" data-i18n="ml_metrics_subtitle">Performance evaluation for judges</p>
+    </div>
+
+    {% if ml_metrics %}
+    <!-- Model Info -->
+    <div class="panel">
+        <div class="panel-header">
+            <h3><i class="fas fa-info-circle"></i> <span data-i18n="model_type">Model Type</span></h3>
+        </div>
+        <div class="panel-body">
+            <div class="model-info-grid">
+                <div class="mi-cell"><span class="mi-label">Model:</span> <strong>{{ ml_metrics.model_type }}</strong></div>
+                <div class="mi-cell"><span class="mi-label" data-i18n="features_count">Features:</span> <strong>{{ ml_metrics.features_count }}</strong></div>
+                <div class="mi-cell"><span class="mi-label" data-i18n="samples_count">Training Samples:</span> <strong>{{ ml_metrics.training_samples }}</strong></div>
+                <div class="mi-cell"><span class="mi-label" data-i18n="training_date">Training Date:</span> <strong>{{ ml_metrics.training_date[:10] }}</strong></div>
+                <div class="mi-cell"><span class="mi-label">n_estimators:</span> <strong>{{ ml_metrics.n_estimators }}</strong></div>
+                <div class="mi-cell"><span class="mi-label">max_depth:</span> <strong>{{ ml_metrics.max_depth }}</strong></div>
+            </div>
+            <div class="model-desc" data-i18n="model_description">{{ ml_metrics.description }}</div>
+        </div>
+    </div>
+
+    <!-- Core Metrics Cards -->
+    <div class="metrics-cards-grid">
+        <div class="metric-card metric-blue">
+            <div class="metric-name" data-i18n="accuracy">Accuracy</div>
+            <div class="metric-value">{{ "{:.2f}".format(ml_metrics.accuracy * 100) }}<span class="metric-unit">%</span></div>
+            <div class="metric-bar"><div class="metric-bar-fill" style="width: {{ ml_metrics.accuracy * 100 }}%"></div></div>
+        </div>
+        <div class="metric-card metric-green">
+            <div class="metric-name" data-i18n="precision">Precision (macro)</div>
+            <div class="metric-value">{{ "{:.2f}".format(ml_metrics.precision_macro * 100) }}<span class="metric-unit">%</span></div>
+            <div class="metric-bar"><div class="metric-bar-fill" style="width: {{ ml_metrics.precision_macro * 100 }}%"></div></div>
+        </div>
+        <div class="metric-card metric-orange">
+            <div class="metric-name" data-i18n="recall">Recall (macro)</div>
+            <div class="metric-value">{{ "{:.2f}".format(ml_metrics.recall_macro * 100) }}<span class="metric-unit">%</span></div>
+            <div class="metric-bar"><div class="metric-bar-fill" style="width: {{ ml_metrics.recall_macro * 100 }}%"></div></div>
+        </div>
+        <div class="metric-card metric-purple">
+            <div class="metric-name" data-i18n="f1_score">F1 Score (macro)</div>
+            <div class="metric-value">{{ "{:.3f}".format(ml_metrics.f1_score_macro) }}</div>
+            <div class="metric-bar"><div class="metric-bar-fill" style="width: {{ ml_metrics.f1_score_macro * 100 }}%"></div></div>
+        </div>
+        <div class="metric-card metric-pink">
+            <div class="metric-name" data-i18n="f2_score">F2 Score (macro)</div>
+            <div class="metric-value">{{ "{:.3f}".format(ml_metrics.f2_score_macro) }}</div>
+            <div class="metric-bar"><div class="metric-bar-fill" style="width: {{ ml_metrics.f2_score_macro * 100 }}%"></div></div>
+        </div>
+        <div class="metric-card metric-teal">
+            <div class="metric-name" data-i18n="r2_score">R² Score</div>
+            <div class="metric-value">{{ "{:.3f}".format(ml_metrics.r2_score) }}</div>
+            <div class="metric-bar"><div class="metric-bar-fill" style="width: {{ (ml_metrics.r2_score * 100 if ml_metrics.r2_score > 0 else 0) }}%"></div></div>
+        </div>
+        <div class="metric-card metric-red">
+            <div class="metric-name" data-i18n="rmse">RMSE</div>
+            <div class="metric-value">{{ "{:.3f}".format(ml_metrics.rmse) }}</div>
+            <div class="metric-bar"><div class="metric-bar-fill" style="width: {{ (100 - ml_metrics.rmse * 50 if ml_metrics.rmse < 2 else 10) }}%"></div></div>
+        </div>
+        <div class="metric-card metric-indigo">
+            <div class="metric-name" data-i18n="auc_roc">AUC-ROC</div>
+            <div class="metric-value">{{ "{:.3f}".format(ml_metrics.auc_roc) }}</div>
+            <div class="metric-bar"><div class="metric-bar-fill" style="width: {{ ml_metrics.auc_roc * 100 }}%"></div></div>
+        </div>
+    </div>
+
+    <!-- Cross Validation -->
+    <div class="panel">
+        <div class="panel-header">
+            <h3><i class="fas fa-check-double"></i> Cross-Validation (5-fold)</h3>
+        </div>
+        <div class="panel-body">
+            <div class="cv-grid">
+                {% for score in ml_metrics.cv_scores %}
+                <div class="cv-cell">
+                    <div class="cv-label">Fold {{ loop.index }}</div>
+                    <div class="cv-val">{{ "{:.4f}".format(score) }}</div>
+                </div>
+                {% endfor %}
+                <div class="cv-cell cv-cell-summary">
+                    <div class="cv-label">Mean ± Std</div>
+                    <div class="cv-val">{{ "{:.4f}".format(ml_metrics.cv_accuracy_mean) }} ± {{ "{:.4f}".format(ml_metrics.cv_accuracy_std) }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confusion Matrix -->
+    <div class="dashboard-row">
+        <div class="panel panel-large">
+            <div class="panel-header">
+                <h3><i class="fas fa-table"></i> <span data-i18n="confusion_matrix">Confusion Matrix</span></h3>
+            </div>
+            <div class="panel-body">
+                <table class="confusion-matrix-table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            {% for cls in ml_metrics.class_names %}
+                            <th>{{ cls }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in ml_metrics.confusion_matrix %}
+                        <tr>
+                            <th>{{ ml_metrics.class_names[loop.index0] }}</th>
+                            {% for val in row %}
+                            <td class="cm-cell cm-{{ 'high' if val > 50 else 'medium' if val > 10 else 'low' }}">{{ val }}</td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="panel panel-small">
+            <div class="panel-header">
+                <h3><i class="fas fa-list"></i> <span data-i18n="feature_importance">Feature Importance</span></h3>
+            </div>
+            <div class="panel-body">
+                <div class="feature-importance-list">
+                    {% for fi in ml_metrics.feature_importance[:11] %}
+                    <div class="fi-row">
+                        <div class="fi-name">{{ fi.feature }}</div>
+                        <div class="fi-bar"><div class="fi-fill" style="width: {{ fi.importance * 100 * 4 }}%"></div></div>
+                        <div class="fi-val">{{ "{:.3f}".format(fi.importance) }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feature Importance Chart -->
+    <div class="panel">
+        <div class="panel-header">
+            <h3><i class="fas fa-chart-bar"></i> <span data-i18n="feature_importance">Feature Importance Chart</span></h3>
+        </div>
+        <div class="panel-body">
+            <canvas id="featureImportanceChart" height="80"></canvas>
+        </div>
+    </div>
+
+    <!-- Live Prediction Demo -->
+    <div class="panel">
+        <div class="panel-header">
+            <h3><i class="fas fa-magic"></i> <span data-i18n="live_prediction">Live Prediction Demo</span></h3>
+        </div>
+        <div class="panel-body">
+            <p style="margin-bottom: 15px; color: #94a3b8;">Enter values for the 11 features and click Predict to see the model's output:</p>
+            <div class="predict-grid">
+                {% for col in feature_columns %}
+                <div class="predict-input">
+                    <label>{{ col|replace('_', ' ')|title }}</label>
+                    <input type="number" step="0.01" id="pred_{{ col }}" placeholder="0">
+                </div>
+                {% endfor %}
+            </div>
+            <button class="btn-predict" onclick="runPrediction()">
+                <i class="fas fa-brain"></i> <span data-i18n="predict_button">Predict</span>
+            </button>
+            <div id="predictionResult" class="prediction-result" style="display:none;"></div>
+        </div>
+    </div>
+
+    {% else %}
+    <div class="panel">
+        <div class="panel-body">
+            <div class="empty-state">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>ML Model Not Trained</h3>
+                <p>Run this command to train the model:</p>
+                <code>python ml/train_model.py</code>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
